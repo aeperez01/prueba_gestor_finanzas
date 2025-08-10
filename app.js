@@ -1,5 +1,6 @@
 const LS_KEY = "gf:tx";
 let tx = JSON.parse(localStorage.getItem(LS_KEY) || "[]");
+let catChart;
 
 const $ = sel => document.querySelector(sel);
 const fmt = n => n.toLocaleString("es-MX",{style:"currency",currency:"MXN"});
@@ -47,7 +48,7 @@ function render(){
   const fMonth = $("#filterMonth").value;
   const fText = $("#filterText").value.toLowerCase();
 
-  const filtered = tx.filter(t => 
+  const filtered = tx.filter(t =>
     (fType==="all" || t.type===fType) &&
     (!fMonth || t.date.startsWith(fMonth)) &&
     (!fText || t.category.toLowerCase().includes(fText) || t.note.toLowerCase().includes(fText))
@@ -69,6 +70,30 @@ function render(){
   $("#sumIn").textContent = fmt(inc);
   $("#sumOut").textContent = fmt(exp);
   $("#balance").textContent = fmt(inc-exp);
+
+  const catTotals = filtered.reduce((acc, t) => {
+    acc[t.category] = (acc[t.category] || 0) + t.amount;
+    return acc;
+  }, {});
+
+  const labels = Object.keys(catTotals);
+  const data = Object.values(catTotals);
+  if (!catChart) {
+    catChart = new Chart($("#chartCat"), {
+      type: "pie",
+      data: {
+        labels,
+        datasets: [{
+          data,
+          backgroundColor: labels.map((_, i) => `hsl(${i*360/Math.max(labels.length,1)},70%,70%)`)
+        }]
+      }
+    });
+  } else {
+    catChart.data.labels = labels;
+    catChart.data.datasets[0].data = data;
+    catChart.update();
+  }
 }
 
 function delTx(id){
