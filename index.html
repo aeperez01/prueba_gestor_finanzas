@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Gestor de Finanzas</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <header class="container">
+    <h1>Gestor de Finanzas</h1>
+    <p class="muted">Registra ingresos/gastos, filtra y exporta a CSV</p>
+  </header>
+
+  <main class="container grid">
+    <section class="card">
+      <h2>Nueva transacción</h2>
+      <form id="txForm">
+        <div class="row">
+          <label>Tipo</label>
+          <select id="type" required>
+            <option value="ingreso">Ingreso</option>
+            <option value="gasto">Gasto</option>
+          </select>
+        </div>
+        <div class="row">
+          <label>Categoría</label>
+          <input id="category" required />
+        </div>
+        <div class="row">
+          <label>Monto</label>
+          <input id="amount" type="number" step="0.01" required />
+        </div>
+        <div class="row">
+          <label>Fecha</label>
+          <input id="date" type="date" required />
+        </div>
+        <div class="row">
+          <label>Nota</label>
+          <input id="note" />
+        </div>
+        <button class="btn primary" type="submit">Agregar</button>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>Resumen</h2>
+      <div class="summary">
+        <div><span>Ingresos:</span><strong id="sumIn">$0.00</strong></div>
+        <div><span>Gastos:</span><strong id="sumOut">$0.00</strong></div>
+        <div><span>Balance:</span><strong id="balance">$0.00</strong></div>
+      </div>
+      <canvas id="chartCat" height="140"></canvas>
+    </section>
+
+    <section class="card">
+      <h2>Transacciones</h2>
+      <div class="filters">
+        <select id="filterType">
+          <option value="all">Todos</option>
+          <option value="ingreso">Ingresos</option>
+          <option value="gasto">Gastos</option>
+        </select>
+        <input type="month" id="filterMonth" />
+        <input type="text" id="filterText" placeholder="Buscar..." />
+        <button id="btnExport" class="btn">Exportar CSV</button>
+        <button id="btnClear" class="btn danger">Borrar todo</button>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Fecha</th><th>Tipo</th><th>Categoría</th><th>Nota</th><th>Monto</th><th></th>
+          </tr>
+        </thead>
+        <tbody id="txTableBody"></tbody>
+      </table>
+    </section>
+  </main>
+
+  <footer class="container muted small">
+    Hecho con ❤️ para práctica UdeG. Datos en tu navegador.
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
